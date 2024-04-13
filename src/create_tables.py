@@ -12,11 +12,12 @@ for ele in data['annotations']:
     annotations_by_image[ele['image_id']][id_to_label[ele['category_id']]] += 1
 df = pd.DataFrame(annotations_by_image).transpose().sort_index(axis = 1)
 
+
 df.loc[len(df.index)] = df.sum(axis = 0)
 df.rename(index = {9 : "sum"}, inplace = True)
 
 
-print(df)
+print(df['people'])
 os.chdir(r'tables/')
-df.to_csv(r'eval.csv')
+df['people'].to_csv(r'eval_people.csv')
 
