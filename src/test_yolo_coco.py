@@ -8,7 +8,7 @@ model = YOLO(r'models/yolov8x.pt')
 coco_to_mood = {'person' : 'people', 'chair' : 'chair', 'dining table' : 'table', 'laptop' : 'laptop', 'backpack' : 'bag'}
 # person, chair, dining table, laptop
 def predict(file):
-    results = model(source = file, classes = [0, 24, 56, 61, 64], device = 'cuda',)
+    results = model(source = file, classes = [0, 24, 56, 61, 64], device = '0')
     # boxes = results[0].boxes.cpu().numpy()
     labels = results[0].boxes.cls.cpu().numpy()
     # results[0].show()
@@ -37,4 +37,6 @@ df.rename(index = {9 : "sum"}, inplace = True)
 
 os.chdir(r'..')
 os.chdir(r'..')
-df.to_csv(r'tables/yolo_coco.csv')
+df.to_csv(r'tables/yolo_coco.csv', )
+
+print(df)

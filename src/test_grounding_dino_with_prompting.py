@@ -1,4 +1,4 @@
-from autodistill_grounded_sam import GroundedSAM
+from autodistill_grounding_dino import GroundingDINO
 from autodistill.detection import CaptionOntology
 from autodistill_yolov8 import yolov8
 import cv2
@@ -9,20 +9,18 @@ import numpy as np
 
 
 
-def predict(image_path, base_model = GroundedSAM(CaptionOntology({"person" : "person",
-                        "laptop" : "laptop",
-                        "chair" : "chair",
-                        "table" : "table",
-                        "backpack" : "backpack"})
-
-)): 
+def predict(image_path, base_model = GroundingDINO(CaptionOntology({"person" : "person",
+                            "laptops, often on a table" : "laptop",
+                            "chairs, often surrounding a table with similar styles, cannot also be a table" : "chair",
+                            "table or desk, cannot also be a chair" : "table",
+                            "backpack" : "backpack"}))): 
     image = cv2.imread(image_path)
     classes = ["person", "laptop", "chair", "table", "backpack"]
     detections = base_model.predict(image_path)
     labels = [classes[class_id] for _, _, confidence, class_id, _ in detections]
-    # box_annotator = sv.BoxAnnotator()
-    # annotated_frame = box_annotator.annotate(scene=image.copy(), detections=detections, labels=labels)
-    # sv.plot_image(annotated_frame)
+    box_annotator = sv.BoxAnnotator()
+    annotated_frame = box_annotator.annotate(scene=image.copy(), detections=detections, labels=labels)
+    sv.plot_image(annotated_frame)
     return labels
 
 results = {}
@@ -44,4 +42,4 @@ df.loc[len(df.index)] = df.sum(axis = 0)
 df.rename(index = {9 : "sum"}, inplace = True)
 os.chdir('..')
 os.chdir('..')
-df.to_csv('tables/grounding_sam_with_prompting.csv')
+df.to_csv('tables/grounding_dino_with_prompting.csv')
