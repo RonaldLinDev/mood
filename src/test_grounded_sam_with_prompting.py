@@ -10,7 +10,7 @@ import numpy as np
 
 
 def predict(image_path, base_model = GroundedSAM(CaptionOntology({"person" : "person",
-                            "laptop often on a table" : "laptop",
+                            "laptops, often on a table" : "laptop",
                             "chairs, often surrounding a table with similar styles, cannot also be a table" : "chair",
                             "table or desk, cannot also be a chair" : "table",
                             "backpack" : "backpack"}))): 
