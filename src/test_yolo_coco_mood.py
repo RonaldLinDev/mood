@@ -4,17 +4,16 @@ import os
 import numpy as np
 import pandas as pd
 # load model
-model = YOLO(r'models/yolov8x.pt')
-results = model.train(data = 'dataset/data.yaml', epochs = 100, patience = 10, device = 0, workers = 0)
-coco_to_mood = {'person' : 'people', 'chair' : 'chair', 'dining table' : 'table', 'laptop' : 'laptop', 'backpack' : 'bag'}
+model = YOLO(r'models/yolo_coco_mood.pt')
+# results = model.train(data = 'dataset/data.yaml', epochs = 100, patience = 10, device = 0, workers = 0)
 # person, chair, dining table, laptop
 def predict(file):
-    results = model(source = file, classes = [0, 24, 56, 61, 64], device = '0')
+    results = model(source = file, device = '0')
     # boxes = results[0].boxes.cpu().numpy()
     labels = results[0].boxes.cls.cpu().numpy()
     # results[0].show()
     names = results[0].names
-    return [coco_to_mood[names[id]] for id in labels]
+    return [names[id] for id in labels]
 
 
 
@@ -31,7 +30,9 @@ for file in os.listdir():
             
 df = pd.DataFrame(results).transpose().replace(np.nan, 0)
 df['laptop'] = 0
+df['backpack'] = 0
 df['table'] = 0
+
 df = df.sort_index(axis = 1)
 df.loc[len(df.index)] = df.sum(axis = 0)
 df.rename(index = {9 : "sum"}, inplace = True)
